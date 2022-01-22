@@ -59,31 +59,11 @@ __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
         ch -= 0x20;
         str[0] = ch;
         
-        switch (str[0]) {
-            case 'I':
-            case 'O':
-            case 'P':
-                if (skip && ch == 'E' || ch == 'S') {
-                    skip = 0;
-                    break;
-                } else {
-                    vga_puts(str, &main_vga, 0);
-                    main_vga -= 2;
-                    skip = 1;
-                    update_cursor(++cursor_x, cursor_y);
-                }
-
-                break;
+        switch (str[0]) { 
             default:
-                if (skip && ch == 'E' || ch == 'S') {
-                    skip = 0;
-                    break;
-                } else { 
-                    vga_puts(str, &main_vga, 0);
-                    main_vga -= 2;
-                    update_cursor(++cursor_x, cursor_y);
-                }
-
+                vga_puts(str, &main_vga, 0);
+                main_vga -= 2;
+                update_cursor(++cursor_x, cursor_y);
                 break;
 
         }
