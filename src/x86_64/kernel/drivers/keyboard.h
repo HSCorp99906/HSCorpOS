@@ -58,19 +58,20 @@ __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
         char str[2] = "\0\0";
         ch -= 0x20;
         str[0] = ch;
-        
-        switch (str[0]) { 
-            default:
-                vga_puts(str, &main_vga, 0);
-                main_vga -= 2;
-                update_cursor(++cursor_x, cursor_y);
-                break;
 
-        }
+        
+        vga_puts(str, &main_vga, 0);
+        main_vga -= 2;
+        update_cursor(++cursor_x, cursor_y);
+
     } else if (scancode == 57) {
         update_cursor(++cursor_x, cursor_y);
         *main_vga = ' ';
         main_vga += 2;
+    } else if (scancode == 83) {
+        update_cursor(--cursor_x, cursor_y);
+        main_vga -= 2;
+        *main_vga = ' ';
     }
  
     outportb(0x20, 0x20); 
