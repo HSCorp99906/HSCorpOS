@@ -34,11 +34,9 @@
 #include "../IDT.h"
 #include "../../util/types.h"
 
-uint8_t shell_mode = 1;
-
-// De-stubify keyboard IRQ's.
-void syscall_ds_kb_irq() {
-    set_idt_desc32(0x21, kb_isr, INT_GATE_FLAGS);  
+// Switch keyboard irq to command mode.
+void syscall_cmd_kb_irq() {
+    set_idt_desc32(0x21, kb_isr_cmd, INT_GATE_FLAGS);  
 }
 
 // Stubify keyboard IRQ's.
@@ -47,7 +45,7 @@ void syscall_sb_kb_irq() {
 }
 
 void syscall_write_str() {
-    if (shell_mode) {
+    if (command_mode) {
         register const char* const STR asm("ecx");
         register const uint8_t NEWLINE_BOOL asm("ebx");
         vga_puts(STR, &main_vga, NEWLINE_BOOL);
@@ -56,7 +54,7 @@ void syscall_write_str() {
 
 
 void syscall_update_cursor() {
-    if (shell_mode) {
+    if (command_mode) {
         register const uint16_t X asm("ecx");
         register const uint16_t Y asm("ebx");
         cursor_x = X;
@@ -73,7 +71,7 @@ void syscall_restart() {
 void* syscalls[MAX_SYSCALLS] = {
     syscall_restart,
     syscall_sb_kb_irq,
-    syscall_ds_kb_irq,
+    syscall_cmd_kb_irq,
     syscall_write_str,
     syscall_update_cursor,
 };

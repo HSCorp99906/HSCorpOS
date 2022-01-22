@@ -58,7 +58,7 @@ __attribute__((interrupt)) void kb_stub_isr(int_frame32_t* frame) {
     outportb(0x20, 0x20);
 }
 
-__attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
+__attribute__((interrupt)) void kb_isr_cmd(int_frame32_t* frame) {
     uint8_t scancode = inportb(0x60);
     char ch = SC_ASCII[scancode];
     static uint8_t skip = 0;
@@ -69,30 +69,28 @@ __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
         commandBuffer[MAX_CHARS] = '\0';
     }
 
-    if (command_mode) {
-        if (ch >= 'a' && ch <= 'z' && cursor_x < CHAR_HIGH_LIMIT) {
-            char str[2] = "\0\0";
-            ch -= 0x20;
-            str[0] = ch;
+    if (ch >= 'a' && ch <= 'z' && cursor_x < CHAR_HIGH_LIMIT) {
+        char str[2] = "\0\0";
+        ch -= 0x20;
+        str[0] = ch;
 
-            vga_puts(str, &main_vga, 0);
-            main_vga -= 2;
-            update_cursor(++cursor_x, cursor_y);
-            commandBuffer[commandBufferIdx] = str[0];
-            ++commandBufferIdx;
-        } else if (scancode == 57 && cursor_x < 35) {
-            update_cursor(++cursor_x, cursor_y);
-            *main_vga = ' ';
-            main_vga += 2;
-            commandBuffer[commandBufferIdx] = ' ';
-            ++commandBufferIdx;
-        } else if (scancode == 83 && cursor_x > CHAR_LOW_LIMIT) {
-            update_cursor(--cursor_x, cursor_y);
-            main_vga -= 2;
-            *main_vga = ' ';
-            commandBuffer[commandBufferIdx] = '\0';
-            --commandBufferIdx;
-        }
+        vga_puts(str, &main_vga, 0);
+        main_vga -= 2;
+        update_cursor(++cursor_x, cursor_y);
+        commandBuffer[commandBufferIdx] = str[0];
+        ++commandBufferIdx;
+    } else if (scancode == 57 && cursor_x < 35) {
+        update_cursor(++cursor_x, cursor_y);
+        *main_vga = ' ';
+        main_vga += 2;
+        commandBuffer[commandBufferIdx] = ' ';
+        ++commandBufferIdx;
+    } else if (scancode == 83 && cursor_x > CHAR_LOW_LIMIT) {
+        update_cursor(--cursor_x, cursor_y);
+        main_vga -= 2;
+        *main_vga = ' ';
+        commandBuffer[commandBufferIdx] = '\0';
+        --commandBufferIdx;
     }
  
     outportb(0x20, 0x20); 

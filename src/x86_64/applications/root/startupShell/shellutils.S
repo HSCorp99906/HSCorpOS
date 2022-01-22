@@ -24,7 +24,7 @@
 
 global shell_prompt
 global curs_mov
-global ds_kb_irq
+global kb_irq_cmd_isr
 
 
 shell_prompt:
@@ -41,7 +41,7 @@ curs_mov:
     int 0x79        ; Syscall.
     ret
 
-ds_kb_irq:
+kb_irq_cmd_isr:
     mov eax, 0x2
     int 0x79        ; Syscall.
     ret
