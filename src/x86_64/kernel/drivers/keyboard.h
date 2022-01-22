@@ -23,8 +23,6 @@
 */
 
 
-
-
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
@@ -51,12 +49,12 @@ __attribute__((interrupt)) void kb_stub_isr(int_frame32_t* frame) {
     outportb(0x20, 0x20);
 }
 
-__attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {  
+__attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
     uint8_t scancode = inportb(0x60);
     char ch = SC_ASCII[scancode];
     static uint8_t skip = 0;
 
-    if (ch >= 'a' && ch <= 'z') {
+    if (ch >= 'a' && ch <= 'z' && write_kb_chr) {
         char str[2] = "\0\0";
         ch -= 0x20;
         str[0] = ch;
@@ -65,24 +63,34 @@ __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
             case 'I':
             case 'O':
             case 'P':
-                if (!(skip)) {          
+                if (skip && ch == 'E' || ch == 'S') {
+                    skip = 0;
+                    break;
+                } else {
                     vga_puts(str, &main_vga, 0);
                     main_vga -= 2;
                     skip = 1;
-                } 
+                    update_cursor(++cursor_x, cursor_y);
+                }
 
                 break;
             default:
-                if (!(skip)) {
+                if (skip && ch == 'E' || ch == 'S') {
+                    skip = 0;
+                    break;
+                } else { 
                     vga_puts(str, &main_vga, 0);
                     main_vga -= 2;
-                } else {
-                    skip = 0;
+                    update_cursor(++cursor_x, cursor_y);
                 }
 
                 break;
 
         }
+    } else if (scancode == 57) {
+        update_cursor(++cursor_x, cursor_y);
+        *main_vga = ' ';
+        main_vga += 2;
     }
  
     outportb(0x20, 0x20); 

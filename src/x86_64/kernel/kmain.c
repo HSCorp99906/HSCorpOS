@@ -23,13 +23,16 @@
 */
 
 char* main_vga = (char*)0xB8000;
+unsigned int cursor_x = 10;
+unsigned int cursor_y = 2;
+unsigned char write_kb_chr = 1;
 
 #include "drivers/VGA.h"
-#include "drivers/keyboard.h"
 #include "interrupts/IDT.h"
 #include "interrupts/interrupt_handlers.h"
 #include "interrupts/syscalls/syscalls.h"
 #include "util/startup.h"
+#include "drivers/keyboard.h"
 
 int main() {
     init_idt();

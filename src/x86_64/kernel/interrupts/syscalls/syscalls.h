@@ -59,10 +59,11 @@ void syscall_update_cursor() {
     if (shell_mode) {
         register const uint16_t X asm("ecx");
         register const uint16_t Y asm("ebx");
+        cursor_x = X;
+        cursor_y = Y;
         update_cursor(X, Y);
     }
 }
-
 
 void syscall_restart() {
     __asm__ __volatile__("int $0xC8");
@@ -75,7 +76,6 @@ void* syscalls[MAX_SYSCALLS] = {
     syscall_ds_kb_irq,
     syscall_write_str,
     syscall_update_cursor,
-    
 };
 
 #endif
