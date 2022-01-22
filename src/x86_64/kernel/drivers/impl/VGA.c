@@ -24,10 +24,17 @@
 
 #include "../VGA.h"
 
-void vga_puts(const char* str, char** vga) {
+void vga_puts(const char* str, char** vga, uint8_t newline) {
     for (int i = 0; i < strlen(str); ++i) {
         **vga = str[i];
         *vga += 2;
+    }
+
+    if (newline) {
+        for (int i = 0; i < 80 - strlen(str); ++i) {
+            **vga = ' ';
+            *vga += 2;
+        }
     }
 }
 

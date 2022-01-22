@@ -29,7 +29,7 @@
 #include "../util/strings.h"
 #include "../util/types.h"
 
-void vga_puts(const char* str, char** vga);
+void vga_puts(const char* str, char** vga, uint8_t newline);
 void vga_clear(char** vga, uint8_t bg, uint8_t fg);
 
 #endif

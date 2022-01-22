@@ -52,7 +52,7 @@ int main() {
     vga_clear(&main_vga, 0x01, 0x06 + 8);
     const char* const GREET = "Kernel Loaded at 0x1000.";
     
-    vga_puts(GREET, &main_vga);
+    vga_puts(GREET, &main_vga, 1);
 
     return 0;
 }
