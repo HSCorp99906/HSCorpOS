@@ -25,7 +25,7 @@
 char* main_vga = (char*)0xB8000;
 unsigned int cursor_x = 10;
 unsigned int cursor_y = 2;
-unsigned char write_kb_chr = 1;
+unsigned char command_mode = 1;
 
 #include "drivers/VGA.h"
 #include "interrupts/IDT.h"
