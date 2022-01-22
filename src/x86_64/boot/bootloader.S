@@ -77,7 +77,7 @@ _start:
 
     mov bx, KERNEL_OFFSET
     mov dl, [BOOT_DRIVE]
-    mov dh, 0x05
+    mov dh, 0x09
     call disk_load
 
 

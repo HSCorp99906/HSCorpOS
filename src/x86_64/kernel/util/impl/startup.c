@@ -22,42 +22,10 @@
 * POSSIBILITY OF SUCH DAMAGE.
 */
 
-char* main_vga = (char*)0xB8000;
 
-#include "drivers/VGA.h"
-#include "drivers/keyboard.h"
-#include "interrupts/IDT.h"
-#include "interrupts/interrupt_handlers.h"
-#include "interrupts/syscalls/syscalls.h"
-#include "util/startup.h"
-
-int main() {
-    init_idt();
-
-    // Setup exceptions:
-    set_idt_desc32(0, div_by_0_handler, TRAP_GATE_FLAGS); 
-
-    // Setup interrupts.
-
-    unmask_kb_irq();
-    set_idt_desc32(0xC8, _reboot, INT_GATE_FLAGS);
-    set_idt_desc32(0x21, kb_stub_isr, INT_GATE_FLAGS);
-
-    __asm__ __volatile__("sti");
-
-    // Setup syscalls.
-    extern void _syscall_dispatcher();
-    set_idt_desc32(0x79, _syscall_dispatcher, INT_GATE_USER_FLAGS); 
+int _su_shell_main();
 
 
-    // Change background and foreground then greet. 
-    vga_clear(&main_vga, 0x01, 0x06 + 8);
-    const char* const GREET = "Kernel Loaded at 0x1000.";
-    
-    vga_puts(GREET, &main_vga, 1);
-    vga_puts("\0", &main_vga, 1);
-
-    _start_root_prog();
-
-    return 0;
+void _start_root_prog() {
+    _su_shell_main();   
 }

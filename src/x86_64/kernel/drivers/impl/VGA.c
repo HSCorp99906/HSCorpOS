@@ -52,3 +52,14 @@ void vga_clear(char** vga, uint8_t bg, uint8_t fg) {
 
     *vga = (char*)0xB8000;
 }
+
+
+void update_cursor(int x, int y) {
+	uint16_t pos = y * 80 + x;
+
+	outportb(0x3D4, 0x0F);
+	outportb(0x3D5, (uint8_t) (pos & 0xFF));
+	outportb(0x3D4, 0x0E);
+	outportb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+}
+

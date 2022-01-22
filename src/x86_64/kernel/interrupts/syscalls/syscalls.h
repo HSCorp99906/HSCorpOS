@@ -26,7 +26,7 @@
 #ifndef SYSCALLS_H
 #define SYSCALLS_H
 
-#define MAX_SYSCALLS 4
+#define MAX_SYSCALLS 5
 
 #include "../../drivers/IO.h"
 #include "../../drivers/VGA.h"
@@ -55,6 +55,15 @@ void syscall_write_str() {
 }
 
 
+void syscall_update_cursor() {
+    if (shell_mode) {
+        register const uint16_t X asm("ecx");
+        register const uint16_t Y asm("ebx");
+        update_cursor(X, Y);
+    }
+}
+
+
 void syscall_restart() {
     __asm__ __volatile__("int $0xC8");
 }
@@ -65,6 +74,7 @@ void* syscalls[MAX_SYSCALLS] = {
     syscall_sb_kb_irq,
     syscall_ds_kb_irq,
     syscall_write_str,
+    syscall_update_cursor,
     
 };
 

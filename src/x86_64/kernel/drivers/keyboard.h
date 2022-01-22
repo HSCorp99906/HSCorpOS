@@ -54,13 +54,35 @@ __attribute__((interrupt)) void kb_stub_isr(int_frame32_t* frame) {
 __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {  
     uint8_t scancode = inportb(0x60);
     char ch = SC_ASCII[scancode];
+    static uint8_t skip = 0;
 
     if (ch >= 'a' && ch <= 'z') {
         char str[2] = "\0\0";
         ch -= 0x20;
         str[0] = ch;
-        vga_puts(str, &main_vga, 0);
-        main_vga -= 2;
+        
+        switch (str[0]) {
+            case 'I':
+            case 'O':
+            case 'P':
+                if (!(skip)) {          
+                    vga_puts(str, &main_vga, 0);
+                    main_vga -= 2;
+                    skip = 1;
+                } 
+
+                break;
+            default:
+                if (!(skip)) {
+                    vga_puts(str, &main_vga, 0);
+                    main_vga -= 2;
+                } else {
+                    skip = 0;
+                }
+
+                break;
+
+        }
     }
  
     outportb(0x20, 0x20); 
