@@ -1,6 +1,6 @@
 all:
 	@ ##
-	@ # Buildscruot for HSCorp99906
+	@ # Buildscript for HSCorp99906
 	@ #
 	@ # @Makefile
 	@ # @version 1.0	
