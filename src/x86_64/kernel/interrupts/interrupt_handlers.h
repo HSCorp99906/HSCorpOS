@@ -36,6 +36,8 @@ __attribute__((interrupt)) void div_by_0_handler(int_frame32_t* frame) {
     __asm__ __volatile__("cli; hlt");
 }
 
+__attribute__((interrupt)) void stub_isr(int_frame32_t* frame) {}
+
 __attribute__((interrupt)) void _reboot(int_frame32_t* frame) {
     outportb(0x64, 0xFE);
 }

@@ -4,6 +4,9 @@ all:
 	@ #
 	@ # @Makefile
 	@ # @version 1.0	
+	@ #
+	@ #
+	@ # Build kernel.
 	nasm -fbin src/x86_64/boot/bootloader.S -o bin/bootloader.bin
 	nasm -felf src/x86_64/kernel/kasm.S -o obj/kasm.o
 	nasm -felf src/x86_64/kernel/interrupts/syscalls/syscall_dispatcher.S -o obj/syscalldispatcher.o
@@ -13,6 +16,7 @@ all:
 	gcc -c -m32 src/x86_64/kernel/drivers/impl/IO.c -ffreestanding -fno-pie -fstack-protector -o obj/IO.o
 	i686-elf-ld -Tlink.ld obj/kasm.o obj/kmain.o obj/strings.o \
 		obj/vga.o obj/IO.o obj/syscalldispatcher.o  --oformat binary -o bin/kernel.bin
+
 	cat bin/bootloader.bin bin/kernel.bin > bin/HSCorpOS.bin
 	@ # Prepare the image.
 	sudo dd if=/dev/zero of=HSCorpOS.img bs=1024 count=1440

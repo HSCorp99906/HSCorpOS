@@ -45,6 +45,12 @@ void unmask_kb_irq() {
 uint8_t writeCh = 1;
 char* kb_drvr_vga = (char*)0xB8000;
 
+
+__attribute__((interrupt)) void kb_stub_isr(int_frame32_t* frame) {
+    inportb(0x60);
+    outportb(0x20, 0x20);
+}
+
 __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {  
     uint8_t scancode = inportb(0x60);
     char ch = SC_ASCII[scancode];

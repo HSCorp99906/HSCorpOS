@@ -37,10 +37,11 @@ int main() {
     set_idt_desc32(0, div_by_0_handler, TRAP_GATE_FLAGS); 
 
     // Setup interrupts.
-    
+
     unmask_kb_irq();
-    set_idt_desc32(0x21, kb_isr, INT_GATE_FLAGS); 
     set_idt_desc32(0xC8, _reboot, INT_GATE_FLAGS);
+    set_idt_desc32(0x21, kb_stub_isr, INT_GATE_FLAGS);
+
     __asm__ __volatile__("sti");
 
     // Setup syscalls.
@@ -53,6 +54,7 @@ int main() {
     const char* const GREET = "Kernel Loaded at 0x1000.";
     
     vga_puts(GREET, &main_vga, 1);
+    vga_puts("\0", &main_vga, 1);
 
     return 0;
 }
