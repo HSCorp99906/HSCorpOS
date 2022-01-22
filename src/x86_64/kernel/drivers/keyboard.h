@@ -31,6 +31,9 @@
 #include "../interrupts/IDT.h"
 #include "../util/types.h"
 
+#define CHAR_HIGH_LIMIT 35
+#define CHAR_LOW_LIMIT 10
+
 const uint8_t* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
 "\x00" "qwertyuiop[]" "\x0D\x1D" "asdfghjkl;'`" "\x00" "\\"
 "zxcvbnm,./" "\x00\x00\x00" " ";
@@ -54,21 +57,19 @@ __attribute__((interrupt)) void kb_isr(int_frame32_t* frame) {
     char ch = SC_ASCII[scancode];
     static uint8_t skip = 0;
 
-    if (ch >= 'a' && ch <= 'z' && write_kb_chr) {
+    if (ch >= 'a' && ch <= 'z' && write_kb_chr && cursor_x < CHAR_HIGH_LIMIT) {
         char str[2] = "\0\0";
         ch -= 0x20;
         str[0] = ch;
 
-        
         vga_puts(str, &main_vga, 0);
         main_vga -= 2;
         update_cursor(++cursor_x, cursor_y);
-
-    } else if (scancode == 57) {
+    } else if (scancode == 57 && cursor_x < 35) {
         update_cursor(++cursor_x, cursor_y);
         *main_vga = ' ';
         main_vga += 2;
-    } else if (scancode == 83) {
+    } else if (scancode == 83 && cursor_x > CHAR_LOW_LIMIT) {
         update_cursor(--cursor_x, cursor_y);
         main_vga -= 2;
         *main_vga = ' ';
