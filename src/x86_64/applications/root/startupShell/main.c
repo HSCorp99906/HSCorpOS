@@ -29,10 +29,10 @@ extern void kb_irq_cmd_isr();
 
 int _su_shell_main() {
     // Prompt initalization.
-    const char* const PROMPT = "KessOS~$ ";
+    const char* const PROMPT = "HSCorpOS~$ ";
     shell_prompt(PROMPT, 0);
 
-    curs_mov(10, 2);    
+    curs_mov(12, 2);    
 
     kb_irq_cmd_isr();       // Switch to command mode.
     return 0;
